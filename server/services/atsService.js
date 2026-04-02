@@ -5,11 +5,14 @@ const stopWords = [
   ];
   
   const skillAliases = {
-    "react": ["react.js", "reactjs"],
-    "node": ["node.js", "nodejs"],
-    "javascript": ["js"],
-    "mongodb": ["mongo"],
-    "aws": ["amazon web services"]
+    "react": ["react.js", "reactjs", "frontend"],
+    "node": ["node.js", "nodejs", "backend"],
+    "javascript": ["js", "es6", "typescript", "ts"],
+    "mongodb": ["mongo", "mongoose", "nosql"],
+    "aws": ["amazon web services", "cloud", "ec2", "s3"],
+    "python": ["django", "flask", "py"],
+    "sql": ["postgresql", "mysql", "database", "db"],
+    "docker": ["kubernetes", "k8s", "containerization"]
   };
   
   function normalizeText(text) {

@@ -1,8 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-const JWT_SECRET = "mysecretkey"; // Later move to .env
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key";
 
 // Register
 exports.register = async (req, res) => {

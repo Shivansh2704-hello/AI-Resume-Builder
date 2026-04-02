@@ -13,7 +13,7 @@ function Reports() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/ats/reports", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/ats/reports`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReports(res.data);
@@ -32,7 +32,7 @@ function Reports() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/ats/reports/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/ats/reports/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setReports((prev) => prev.filter((report) => report._id !== id));

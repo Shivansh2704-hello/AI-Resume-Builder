@@ -2,6 +2,10 @@ const { calculateATSScore } = require("../services/atsService");
 const ATSReport = require("../models/ATSReport");
 const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.OPENAI_API_KEY);
+const aiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 exports.analyzeUploadedResume = async (req, res) => {
   console.log("🔥 API HIT 🔥");
@@ -60,8 +64,32 @@ exports.analyzeUploadedResume = async (req, res) => {
       });
     }
 
-    // ✅ ATS Score Calculation
+    // ✅ ATS Score Calculation (Keyword Matching)
     const result = calculateATSScore(resumeText, jobDescription);
+
+    // ✅ AI Semantic Analysis (Enhanced Insights)
+    let aiSuggestion = result.suggestion;
+
+    try {
+      const prompt = `You are a high-level ATS (Applicant Tracking System) Scanner. 
+Analyze the provided RESUME against the JOB DESCRIPTION.
+Give a concise explanation (2-3 sentences) of how well the candidate's actual EXPERIENCE (not just keywords) matches the role.
+Highlight 1 major strength and 1 major gap.
+
+----- RESUME -----
+${resumeText.substring(0, 4000)}
+
+----- JOB DESCRIPTION -----
+${jobDescription.substring(0, 2000)}
+
+Return ONLY the concise analysis text.`;
+
+      const aiResult = await aiModel.generateContent(prompt);
+      const aiResponse = await aiResult.response;
+      aiSuggestion = aiResponse.text();
+    } catch (aiErr) {
+      console.warn("AI ATS Analysis failed, falling back to basic suggestion.", aiErr.message);
+    }
 
     // ✅ Save to DB
     const report = new ATSReport({
@@ -71,7 +99,7 @@ exports.analyzeUploadedResume = async (req, res) => {
       score: result.score,
       matchedKeywords: result.matchedKeywords,
       missingKeywords: result.missingKeywords,
-      suggestion: result.suggestion,
+      suggestion: aiSuggestion, // Use AI suggestion if available
     });
 
     await report.save();
@@ -82,7 +110,7 @@ exports.analyzeUploadedResume = async (req, res) => {
       score: result.score,
       matchedKeywords: result.matchedKeywords,
       missingKeywords: result.missingKeywords,
-      suggestion: result.suggestion,
+      suggestion: aiSuggestion, // Improved AI-driven suggestion
     });
 
   } catch (error) {

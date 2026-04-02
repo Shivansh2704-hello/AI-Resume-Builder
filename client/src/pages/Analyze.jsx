@@ -28,7 +28,7 @@ function Analyze() {
       formData.append("jobDescription", jobDesc);
 
       const token = localStorage.getItem("token");
-      const res = await axios.post("http://localhost:5000/api/ats/upload-analyze", formData, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/ats/upload-analyze`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const atsData = res.data;
@@ -42,7 +42,7 @@ function Analyze() {
         My missing keywords are: ${atsData.missingKeywords?.join(", ") || "none"}. 
         Provide a concise, 2-3 sentence strategic advice on exactly how to improve my resume for this specific job.`;
         
-        const aiRes = await axios.post("http://localhost:5000/api/ai/chat", { message: aiPrompt });
+        const aiRes = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/ai/chat`, { message: aiPrompt });
         setAiSuggestion(aiRes.data.reply);
       } catch (aiErr) {
         console.error("AI Error:", aiErr);

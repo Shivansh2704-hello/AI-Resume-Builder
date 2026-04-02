@@ -10,6 +10,7 @@ const atsRoutes = require('./routes/atsRoutes');
 
 const app = express();
 
+app.set('trust proxy', 1); // Required for deployment on Render
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);

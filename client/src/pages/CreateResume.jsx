@@ -98,7 +98,7 @@ function CreateResume() {
     try {
       setIsSaving(true);
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:5000/api/resume/save", {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/resume/save`, {
         title: resumeTitle,
         template,
         resumeData

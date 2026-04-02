@@ -3,7 +3,7 @@ const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
 
 const genAI = new GoogleGenerativeAI(process.env.OPENAI_API_KEY);
-const aiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const aiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 function fallbackAI(message) {
   message = message.toLowerCase();
@@ -23,10 +23,22 @@ exports.chatWithAI = async (req, res) => {
   try {
     const { message } = req.body;
     
-    const prompt = `You are an expert ATS Resume Optimization Assistant. Give concise, actionable advice based on the ATS results below:\n\n${message}`;
+    const prompt = `You are a world-class AI Career Coach and ATS Expert. 
+Based on the following resume data and job description, provide 3-5 high-impact, actionable improvements to increase the ATS score.
+Focus on:
+1. Identifying missing high-priority technical skills.
+2. Rewording weak "responsible for" bullet points into impact-driven achievements.
+3. Improving keyword density without "stuffing".
+
+----- CONTEXT DATA -----
+${message}
+-----------------------
+
+Return your response in clean Markdown with professional, encouraging tone.`;
     
     const result = await aiModel.generateContent(prompt);
-    const text = await result.response.text();
+    const response = await result.response;
+    const text = response.text();
 
     res.json({
       reply: text
@@ -62,20 +74,25 @@ exports.generateOptimizedResume = async (req, res) => {
       return res.status(400).json({ message: "Only PDF or DOCX files allowed" });
     }
 
-    const prompt = `You are an expert Resume Writer and ATS Optimizer. 
-I have a resume and a target job description. 
-Rewrite the entire resume to score perfectly against the job description. 
-Focus on seamlessly integrating missing keywords, using strong action verbs, and quantifying bullet points where possible. Do not hallucinate experiences, just reword and emphasize existing skills.
-Return ONLY the newly generated professional resume in plain text format so the user can copy or paste it directly. Do not include introductory conversational text.
+    const prompt = `You are an elite Professional Resume Writer. 
+Your task is to rewrite the provided resume to be perfectly optimized for the target job description while maintaining 100% honesty.
+
+GUIDELINES:
+- Use standard, clean resume headings (Professional Summary, Experience, Skills, Education).
+- Use the "X-Y-Z Formula" (Accomplished [X] as measured by [Y], by doing [Z]) for all bullet points.
+- Naturally integrate high-value keywords from the Job Description into the skills and experience sections.
+- Ensure the tone is professional, confident, and direct.
+- Return ONLY the newly rewritten resume in a clean, professional layout (standard text or Markdown). Do NOT include any introductory or closing remarks.
 
 ----- TARGET JOB DESCRIPTION -----
 ${jobDescription}
 
------ CURRENT RESUME -----
+----- CURRENT RESUME TEXT -----
 ${resumeText}`;
 
     const result = await aiModel.generateContent(prompt);
-    const text = await result.response.text();
+    const response = await result.response;
+    const text = response.text();
 
     res.json({
       generatedResume: text

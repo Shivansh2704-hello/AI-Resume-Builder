@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/ai-resume-builder");
+    const mongoURI = process.env.MONGO_URI;
+    if (!mongoURI) throw new Error("MONGO_URI not defined in .env");
+    await mongoose.connect(mongoURI);
     console.log("MongoDB Connected ✅");
   } catch (error) {
     console.error("MongoDB Connection Failed ❌");

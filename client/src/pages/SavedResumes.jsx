@@ -13,7 +13,7 @@ function SavedResumes() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const res = await axios.get("http://localhost:5000/api/resume/saved", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/resume/saved`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setResumes(res.data);
@@ -32,7 +32,7 @@ function SavedResumes() {
     if (!window.confirm("Are you sure you want to delete this saved resume draft?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/resume/saved/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/resume/saved/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setResumes(resumes.filter(r => r._id !== id));

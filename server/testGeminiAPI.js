@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './server/.env' });
 const fs = require('fs');
 
 async function listModels() {
