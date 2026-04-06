@@ -12,9 +12,10 @@ function Auth() {
 
   const handleSubmit = async () => {
     try {
-      const url = isLogin
-        ? "http://localhost:5000/api/auth/login"
-        : "http://localhost:5000/api/auth/register";
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const url = isLogin 
+        ? `${API_URL}/api/auth/login`
+        : `${API_URL}/api/auth/register`;
 
       const res = await axios.post(url, form);
 

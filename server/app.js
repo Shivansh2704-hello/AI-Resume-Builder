@@ -1,10 +1,10 @@
-require("dotenv").config();
+require("dotenv").config({ override: true });
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require("./routes/authRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
-require('dotenv').config();
+require('dotenv').config({ override: true });
 
 const atsRoutes = require('./routes/atsRoutes');
 

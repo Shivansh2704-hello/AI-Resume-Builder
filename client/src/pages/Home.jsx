@@ -90,7 +90,8 @@ function Home() {
           setLoading(false);
           return;
         }
-        const res = await axios.get("http://localhost:5000/api/ats/reports", {
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const res = await axios.get(`${API_URL}/api/ats/reports`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setReports(res.data);
